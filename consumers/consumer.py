@@ -11,7 +11,7 @@ from sqlalchemy import delete
 
 def run(stop_event: threading.Event) -> None:
     consumer = Consumer(conf)
-    consumer.subscribe(["my-topic","user-registrations"]) # TODO: сюда добавить второй топик
+    consumer.subscribe(["my-topic","user-registrations"]) 
     
     try:
         while not stop_event.is_set():
@@ -36,6 +36,9 @@ def run(stop_event: threading.Event) -> None:
 
             print(msg.topic(), msg.offset(), msg.timestamp(), msg.value())
             # TODO: тут делать if на топик, и вызывать соответсвующую логику.
+            topic = msg.topic()
+            raw_msg = msg.value()
+            
             if topic == "my-topic":
                 event = UserDelete.model_validate_json(raw_msg)
                 asyncio.run(delete_lessons_fix(event.user_id))

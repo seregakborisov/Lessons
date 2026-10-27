@@ -5,7 +5,7 @@ from fastapi import HTTPException, status, Depends
 
 from .schemas import *
 from db import models
-from .router import router
+from .router import apiRouter as router
 from db.base import get_session
 
 

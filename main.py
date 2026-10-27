@@ -1,7 +1,7 @@
 import threading
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from handlers.router import router
+from handlers.router import apiRouter as router
 from consumers.consumer import run
 
 

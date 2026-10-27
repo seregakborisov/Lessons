@@ -1,3 +1,3 @@
-from .router import router
+from .router import apiRouter
 
-from .create import delete_lesson, create_lesson, get_lessons, get_lesson
+from .create import delete_lesson_fix, create_lesson, get_lessons, get_lesson
