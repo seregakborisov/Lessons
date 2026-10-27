@@ -22,3 +22,16 @@ class LessonUpdate(BaseModel):
 class LessonRead(LessonBase):
     id: int
     model_config = ConfigDict(from_attributes=True)  # читаем из ORM-объекта
+
+
+from pydantic import BaseModel, ConfigDict
+
+
+class LessonCreate(BaseModel):
+    name: str
+    mentor_id: int
+    description: str | None = None
+    is_active: bool = True
+
+
+

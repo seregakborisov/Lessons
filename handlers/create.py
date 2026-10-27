@@ -56,11 +56,32 @@ async def create_lesson(
 
 
 @router.delete("/{lesson_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_lesson(
+async def delete_lesson_fix(
     lesson_id: int, db: AsyncSession = Depends(get_session)
 ) -> None:
-    lesson = get_lesson(db, lesson_id)
+    lesson = await get_lesson(db, lesson_id)
     if lesson is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Lesson not found")
     await db.delete(lesson)
     await db.commit()
+
+
+@router.post("/create_lesson", response_model=LessonRead, status_code=status.HTTP_201_CREATED,)
+async def create_lesson(
+    data: LessonCreate,
+    db: AsyncSession = Depends(get_session),
+) -> models.Lesson:
+    lesson = models.Lesson(**data.model_dump())
+    db.add(lesson)
+
+    try:
+        await db.commit()
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Lesson with name '{data.name}' already exists",
+        )
+
+    await db.refresh(lesson)
+    return lesson
