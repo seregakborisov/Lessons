@@ -89,3 +89,44 @@ async def create_lesson(
 
     await db.refresh(lesson)
     return lesson
+
+
+@router.post(
+    "/user_visit",
+    response_model=LessonVisit,
+    status_code=status.HTTP_201_CREATED,
+)
+async def user_visit(
+    data: LessonVisit,
+    db: AsyncSession = Depends(get_session),
+) -> LessonVisit:
+   
+    
+    stmt = select(models.Lesson)
+    
+    stmt = stmt.where(models.Lesson.name == data.lesson_name)
+
+    result = await db.execute(stmt)
+    lesson = result.scalar_one_or_none()
+
+    if lesson is None:
+        raise Exception('Lesson not found')
+
+
+    visit = models.Visit(lesson_id = lesson.id, user_id = data.user_id)
+
+    db.add(visit)
+
+    try:
+        await db.commit()
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"User visit '{data.lesson_name}' ",
+        )
+
+    await db.refresh(visit)
+    return data
+
+

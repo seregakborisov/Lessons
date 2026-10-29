@@ -8,10 +8,6 @@ class LessonBase(BaseModel):
     description: str | None = None
 
 
-class LessonCreate(LessonBase):
-    pass
-
-
 class LessonUpdate(BaseModel):
     name: str | None = Field(None, min_length=1, max_length=255)
     mentor_id: int | None = None
@@ -24,11 +20,14 @@ class LessonRead(LessonBase):
     model_config = ConfigDict(from_attributes=True)  # читаем из ORM-объекта
 
 
-from pydantic import BaseModel, ConfigDict
-
-
 class LessonCreate(BaseModel):
     name: str
     mentor_id: int
     description: str | None = None
     is_active: bool = True
+
+
+class LessonVisit(BaseModel):
+    lesson_name: str
+    user_id: int
+
