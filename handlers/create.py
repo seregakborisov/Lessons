@@ -38,7 +38,7 @@ async def get_lessons(
 
 
 @router.post("/", response_model=LessonRead, status_code=status.HTTP_201_CREATED)
-async def create_lesson(
+async def create_lesson_old(
     data: LessonCreate, db: AsyncSession = Depends(get_session)
 ) -> models.Lesson:
     lesson = models.Lesson(**data.model_dump())
@@ -66,7 +66,11 @@ async def delete_lesson_fix(
     await db.commit()
 
 
-@router.post("/create_lesson", response_model=LessonRead, status_code=status.HTTP_201_CREATED,)
+@router.post(
+    "/create_lesson",
+    response_model=LessonRead,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_lesson(
     data: LessonCreate,
     db: AsyncSession = Depends(get_session),

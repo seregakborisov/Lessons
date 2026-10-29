@@ -32,6 +32,3 @@ class LessonCreate(BaseModel):
     mentor_id: int
     description: str | None = None
     is_active: bool = True
-
-
-
