@@ -1,7 +1,6 @@
 conf = {
-    "bootstrap.servers": "localhost:9095",
-    "group.id": "my-consumer-group-3",
-    "auto.offset.reset": "earliest",
-    "enable.auto.commit": False,
-    "client.id": "my-consumer-3",
+    "bootstrap_servers": "localhost:9095",
+    "group_id": "my-consumer-group-3",
+    "auto_offset_reset": "earliest",
+    "enable_auto_commit": False,
 }
