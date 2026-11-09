@@ -13,11 +13,10 @@ class Lesson(Base):
     is_active = Column(Boolean, default=True, nullable=False)
     description = Column(Text)
 
+
 class Visit(Base):
     __tablename__ = "visit"
 
     id = Column(Integer, autoincrement=True, primary_key=True, index=True)
     user_id = Column(Integer, nullable=False)
     lesson_id = Column(Integer, ForeignKey("lessons.id", ondelete="CASCADE"))
-
-

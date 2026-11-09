@@ -30,4 +30,3 @@ class LessonCreate(BaseModel):
 class LessonVisit(BaseModel):
     lesson_name: str
     user_id: int
-

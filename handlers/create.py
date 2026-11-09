@@ -11,6 +11,7 @@ from db.base import get_session
 from typing import Annotated
 from .authorise import get_current_user
 
+
 async def get_lesson(db: AsyncSession, lesson_id: int) -> models.Lesson | None:
     return await db.get(models.Lesson, lesson_id)
 
@@ -39,19 +40,21 @@ async def get_lessons(
     # 5. Извлекаем ORM-объекты
     return result.scalars().all()
 
+
 @router.delete("/{lesson_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_lesson_fix(
     current_user: Annotated[dict, Depends(get_current_user)],
-    lesson_id: int, db: AsyncSession = Depends(get_session)
+    lesson_id: int,
+    db: AsyncSession = Depends(get_session),
 ) -> None:
     if current_user["role"] == "Student":
         raise HTTPException(
-        status_code=status.HTTP_403_FORBIDDEN,
-        detail="Студентам запрещено удалять лекции")
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Студентам запрещено удалять лекции",
+        )
 
     lesson = await get_lesson(db, lesson_id)
 
-    
     if lesson is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Lesson not found")
     await db.delete(lesson)
@@ -70,15 +73,14 @@ async def create_lesson(
 ) -> models.Lesson:
     if current_user["role"] == "Student":
         raise HTTPException(
-        status_code=status.HTTP_403_FORBIDDEN,
-        detail="Студентам запрещено создавать лекции")
-    
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Студентам запрещено создавать лекции",
+        )
+
     lesson = models.Lesson(**data.model_dump())
 
-    
     db.add(lesson)
 
-    
     try:
         await db.commit()
     except IntegrityError:
@@ -101,20 +103,18 @@ async def user_visit(
     data: LessonVisit,
     db: AsyncSession = Depends(get_session),
 ) -> LessonVisit:
-   
-    
+
     stmt = select(models.Lesson)
-    
+
     stmt = stmt.where(models.Lesson.name == data.lesson_name)
 
     result = await db.execute(stmt)
     lesson = result.scalar_one_or_none()
 
     if lesson is None:
-        raise Exception('Lesson not found')
+        raise Exception("Lesson not found")
 
-
-    visit = models.Visit(lesson_id = lesson.id, user_id = data.user_id)
+    visit = models.Visit(lesson_id=lesson.id, user_id=data.user_id)
 
     db.add(visit)
 
@@ -129,5 +129,3 @@ async def user_visit(
 
     await db.refresh(visit)
     return data
-
-

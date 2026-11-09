@@ -11,10 +11,9 @@ bearer_scheme = HTTPBearer()
 
 
 async def get_current_user(
-    credentials: Annotated[
-        HTTPAuthorizationCredentials,
-        Depends(bearer_scheme)]):
-    
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(bearer_scheme)],
+):
+
     token = credentials.credentials
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
