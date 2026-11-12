@@ -3,9 +3,14 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jwt import InvalidTokenError
+import os
+from dotenv import load_dotenv
 
-SECRET_KEY = "cb32e9ded39339be7b9d739e58464af275470a13907d45673cf780caee2d68d0"
-ALGORITHM = "HS256"
+load_dotenv()
+
+SECRET_KEY = os.environ["SECRET_KEY"]
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "10"))
 
 bearer_scheme = HTTPBearer()
 
