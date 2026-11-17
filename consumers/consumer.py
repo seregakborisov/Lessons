@@ -47,9 +47,7 @@ async def run() -> None:
 
 async def delete_lessons_fix(deleted_user_id: int) -> None:
     async with async_session() as session:
-        stmt = delete(Lesson).where(
-            Lesson.mentor_id == deleted_user_id
-        )
+        stmt = delete(Lesson).where(Lesson.mentor_id == deleted_user_id)
 
         await session.execute(stmt)
         await session.commit()
