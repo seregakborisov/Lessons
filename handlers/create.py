@@ -16,7 +16,7 @@ async def get_lesson(db: AsyncSession, lesson_id: int) -> models.Lesson | None:
     return await db.get(models.Lesson, lesson_id)
 
 
-@router.get("/", response_model=list[LessonRead])
+@router.get("/all_lessons", response_model=list[LessonRead])
 async def get_lessons(
     current_user: Annotated[dict, Depends(get_current_user)],
     skip: int = 0,
@@ -41,7 +41,7 @@ async def get_lessons(
     return result.scalars().all()
 
 
-@router.delete("/{lesson_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/lesson_delete", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_lesson_fix(
     current_user: Annotated[dict, Depends(get_current_user)],
     lesson_id: int,
@@ -61,8 +61,7 @@ async def delete_lesson_fix(
     await db.commit()
 
 
-@router.post(
-    "/create_lesson",
+@router.post("/create_lesson",
     response_model=LessonRead,
     status_code=status.HTTP_201_CREATED,
 )
